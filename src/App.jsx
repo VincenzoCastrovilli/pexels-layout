@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 export default function App() {
   const [images, setImages] = useState([]);
   const [activePhoto, setActivePhoto] = useState(0);
+  const [queryString, setQueryString] = useState('nature');
 
   async function getImages() {
     // eslint-disable-next-line no-useless-catch
     try {
       const data = await fetch(
-        'https://api.pexels.com/v1/search?query=nature&per_page=3',
+        `https://api.pexels.com/v1/search?query=${queryString}&per_page=3`,
         {
           headers: {
             Authorization:
@@ -27,7 +28,7 @@ export default function App() {
 
   useEffect(() => {
     getImages();
-  }, []);
+  }, [queryString]);
 
   const mainImage = images.map((item, index) => {
     if (index === activePhoto) {
@@ -56,8 +57,23 @@ export default function App() {
     );
   });
 
+  const form = (
+    <>
+      <label>
+        <input
+          type="text"
+          value={queryString}
+          onChange={(e) => {
+            setQueryString(e.target.value);
+          }}
+        />
+      </label>
+    </>
+  );
+
   return (
     <div className="container">
+      {form}
       <div className="image-picker">
         <button
           onClick={() => {
